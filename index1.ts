@@ -1,9 +1,9 @@
 // создание селекта
 
-function select(this: any): void {
+function select(): void {
     let selectHeader: NodeListOf<Element> = document.querySelectorAll('.header-tabs_select-header');
     let selectItem: NodeListOf<Element> = document.querySelectorAll('.header-tabs_select-item');
-    let selectArrow: Element | null = document.querySelector('.svg-arrow');
+    let selectArrow: HTMLElement | null = document.querySelector('.svg-arrow');
 
     selectHeader.forEach(item => {
         item.addEventListener('click', selectToggle); // переключаем класс .is-active у .header-tabs_select показывая .header-tabs_select-body.
@@ -13,14 +13,14 @@ function select(this: any): void {
         item.addEventListener('click', selectChoose);
     });
 
-    function selectToggle(this: any): void {     //переключает .is-active у родителя .header-tabs_select-header (т.е. у .header-tabs_select)
-        this.classList.toggle('is-active'); // а .header-tabs_select имея чайлд .header-tabs_select-body, показывает его.
+    function selectToggle(): void {     //переключает .is-active у родителя .header-tabs_select-header (т.е. у .header-tabs_select)
+        selectToggle.classList.toggle('is-active'); // а .header-tabs_select имея чайлд .header-tabs_select-body, показывает его.
     };
 
-    function selectChoose(this: any): void {
-        let text: string = this.innerText; //записываем в text пункт, на который мы нажимаем
-        let select: Element = this.closest('.header-tabs_select'); // возвращает ближайший родительский элемент (или сам элемент - .header-tabs_select)
-        let currentText: Element | null = select.querySelector('.header-tabs_select-current'); // записываем то что у нас в .header-tabs_select-current
+    function selectChoose(): void {
+        let text: string = selectChoose.innerText; //записываем в text пункт, на который мы нажимаем
+        let select: Element = selectChoose.closest('.header-tabs_select'); // возвращает ближайший родительский элемент (или сам элемент - .header-tabs_select)
+        let currentText: HTMLElement | null = select.querySelector('.header-tabs_select-current'); // записываем то что у нас в .header-tabs_select-current
         if(currentText) {
             currentText.innerText = text; //записываем в .header-tabs_select-current то что у нас в text
             select.classList.remove('is-active'); // убираем .is-active и .header-tabs_select-body пропадает
@@ -28,7 +28,7 @@ function select(this: any): void {
         }
 
         removeCheckMarkClass();//убираем галочку
-        this.classList.add('check-mark'); // дабавляем галочку на выбранный пункт
+        removeCheckMarkClass.classList.add('check-mark'); // дабавляем галочку на выбранный пункт
     };
 
     function removeCheckMarkClass(): void {
@@ -38,16 +38,15 @@ function select(this: any): void {
     };
 
     if(selectArrow) {
-        const newLocal = this;
-        selectArrow.addEventListener('click', () => {
-        newLocal.classList.toggle('reverse-arrow'); // переварачиваем треугольник svg
-        }); 
+        selectArrow.addEventListener('click', function() {
+            this.classList.toggle('reverse-arrow'); // переварачиваем треугольник svg
+        });    
     };   
 };
 
 select(); 
 
-function auto_grow(element: Element) {     //увеличиваем размер поля ввода комментов
+function auto_grow(element: HTMLElement) {     //увеличиваем размер поля ввода комментов
     element.style.height = "5px";
     element.style.height = (element.scrollHeight)+"px";
 };
@@ -55,15 +54,15 @@ function auto_grow(element: Element) {     //увеличиваем размер
 
 // счётчик символов коммента 
 
-let count: Element | null = document.querySelector('.count-comment-body');
-let message: Element | null = document.querySelector('.text-long-message')
-let textarea: Element | null = document.querySelector('#comment-body');
-let btn: Element | null = document.querySelector('.button');
+let count: HTMLElement = document.querySelector('.count-comment-body');
+let message: HTMLElement = document.querySelector('.text-long-message')
+let textarea: HTMLElement = document.querySelector('#comment-body');
+let btn: HTMLElement = document.querySelector('.button');
 let limit: number = 1000;
 
 function validateTextarea() {
 
-    if(textarea && count && message && btn) {
+    if(textarea) {
         textarea.addEventListener('input', () => {
             let textlength: number = textarea.value.length;
             count.innerText = `${textlength}/${limit}`;
@@ -114,7 +113,17 @@ document.getElementById('comment-send').onclick = function(): void {
 
     //answer должен быть массивом
     if(commentBody) {
-        let comment = {
+        type CommentsForm = {
+            answer: [],
+            body: HTMLElement,
+            time: Number,
+            userSend: String,
+            photoSend: String,
+            like: Boolean,
+            favoriteOff: String,
+            ratingScore: Number
+        };
+        let comment: CommentsForm = {
             answer: [],
             body: commentBody.value,
             time: Math.floor(Date.now() / 1000),
@@ -227,7 +236,9 @@ function showComments(): void {                                    // рисуе
                     <div class="block-result-answer answer-field-${index}"></div>
                 </div>`; 
             //и тут запишем
-            resultComment.innerHTML += out;
+            if(resultComment) {
+                resultComment.innerHTML += out;
+            };    
             //как отрисовали ответ , то теперь имеем блок для отрисовки ответов
             //вызываем функцию отрисовки и обязательно передаем индекс комента
             answerContentDraw(index);
@@ -577,7 +588,7 @@ function localCommentsRating(): void {     // отображаем отсорт�
 // фильтр по актуальности
 
 function saveCommentsRelevance(): void {      // сортируем и сохраняем по актуальности в Local 
-    let reverseRating = document.querySelector('.svg-arrow');
+    let reverseRating: Element = document.querySelector('.svg-arrow');
     let commRel = comments.sort((a: { time: number; }, b: { time: number; }) => a.time > b.time ? 1 : -1)
 
     if(!reverseRating.classList.contains('reverse-arrow')){
